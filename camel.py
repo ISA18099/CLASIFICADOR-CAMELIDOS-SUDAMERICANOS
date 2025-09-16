@@ -1,8 +1,10 @@
 import streamlit as st
+import tensorflow as tf
 import numpy as np
 from PIL import Image
 import json
 import os
+import matplotlib.pyplot as plt
 
 # Configuración de la página
 st.set_page_config(
