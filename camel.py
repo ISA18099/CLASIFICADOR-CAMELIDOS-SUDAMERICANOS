@@ -1,8 +1,9 @@
 import streamlit as st
 import numpy as np
 from PIL import Image
-import tensorflow as tf
 import matplotlib.pyplot as plt
+import requests
+from io import BytesIO
 
 # Configuración de la página
 st.set_page_config(
@@ -16,8 +17,7 @@ st.title("# COMO DIFERENCIAR A UNA:")
 st.subheader("LLAMA, ALPACA, VICUÑA Y GUANACO.")
 st.markdown("---")
 
-# Información sobre las especies con los íconos exactos de tu imagen
-st.sidebar.header("📚 Información de las Especies")
+# Información sobre las especies
 especies_info = {
     "Llama": {
         "icon": "## Llama",
@@ -41,36 +41,37 @@ especies_info = {
     }
 }
 
-# Mostrar información en sidebar exactamente como en tu imagen
+# Sidebar con información
+st.sidebar.header("📚 Información de las Especies")
 st.sidebar.markdown("### Características distintivas:")
 for especie, datos in especies_info.items():
     st.sidebar.markdown(datos["icon"])
     st.sidebar.info(datos["info"])
     st.sidebar.markdown("---")
 
-# Cargar modelo
-@st.cache_resource
-def load_model():
-    # Reemplaza esto con la carga real de tu modelo
-    # model = tf.keras.models.load_model('modelo_camelidos.h5')
-    # return model
-    return None
-
-model = load_model()
-
-# Función para preprocesar la imagen
+# Función para preprocesar la imagen (sin TensorFlow)
 def preprocess_image(image):
     image = image.resize((224, 224))
     image_array = np.array(image)
+    # Si la imagen tiene canal alpha (RGBA), convertir a RGB
+    if image_array.shape[-1] == 4:
+        image_array = image_array[:, :, :3]
     image_array = image_array / 255.0
-    image_array = np.expand_dims(image_array, axis=0)
     return image_array
 
-# Función para hacer la predicción
-def predict_image(model, image):
+# Función de clasificación simulada (sin modelo real)
+def classify_image(image):
+    # Simular análisis de características visuales
     processed_image = preprocess_image(image)
-    prediction = model.predict(processed_image)
-    return prediction
+    
+    # Análisis simple de colores (simulación)
+    avg_color = np.mean(processed_image, axis=(0, 1))
+    
+    # Simular probabilidades basadas en características de color
+    # Esto es solo una simulación - en un caso real usarías un modelo entrenado
+    simulated_probs = np.random.dirichlet(np.ones(4), size=1)[0]
+    
+    return simulated_probs
 
 # Interfaz principal
 st.header("📤 Sube una imagen para clasificar")
@@ -91,20 +92,21 @@ with col1:
         
         # Botón para clasificar
         if st.button("🔍 Clasificar Imagen", type="primary"):
-            with st.spinner("Analizando imagen..."):
+            with st.spinner("Analizando características de la imagen..."):
                 try:
-                    # Simulación de resultado (eliminar cuando tengas el modelo real)
+                    # Clasificación simulada
                     classes = ["Llama", "Alpaca", "Guanaco", "Vicuña"]
-                    simulated_prediction = np.random.dirichlet(np.ones(4), size=1)[0]
-                    result_index = np.argmax(simulated_prediction)
+                    probabilities = classify_image(image)
+                    
+                    result_index = np.argmax(probabilities)
                     predicted_class = classes[result_index]
-                    confidence = simulated_prediction[result_index]
+                    confidence = probabilities[result_index]
                     
                     # Mostrar resultados
                     with col2:
                         st.subheader("📊 Resultados de la Clasificación")
                         
-                        # Mostrar la especie predicha con el formato de tu imagen
+                        # Mostrar la especie predicha
                         st.markdown(f"## {predicted_class}")
                         st.success(f"**Característica identificada:** {especies_info[predicted_class]['caracteristica']}")
                         st.metric("Nivel de confianza", f"{confidence:.2%}")
@@ -112,12 +114,12 @@ with col1:
                         # Gráfico de barras de probabilidades
                         fig, ax = plt.subplots(figsize=(10, 6))
                         colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4']
-                        bars = ax.bar(classes, simulated_prediction * 100, color=colors)
+                        bars = ax.bar(classes, probabilities * 100, color=colors)
                         ax.set_ylabel('Probabilidad (%)')
                         ax.set_title('Distribución de Probabilidades por Especie')
                         
                         # Añadir valores en las barras
-                        for bar, value in zip(bars, simulated_prediction * 100):
+                        for bar, value in zip(bars, probabilities * 100):
                             ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 1,
                                    f'{value:.1f}%', ha='center', va='bottom', fontweight='bold')
                         
@@ -126,12 +128,21 @@ with col1:
                         st.pyplot(fig)
                         
                         # Información adicional de la especie
-                        st.info(f"**Información adicional:** {especies_info[predicted_class]['info']}")
+                        st.info(f"**Información:** {especies_info[predicted_class]['info']}")
                         
                 except Exception as e:
                     st.error(f"Error al procesar la imagen: {str(e)}")
 
-# Sección de instrucciones
+# Sección de características
+st.markdown("---")
+st.header("Características distintivas de cada especie:")
+
+for especie, datos in especies_info.items():
+    st.markdown(datos["icon"])
+    st.info(datos["info"])
+    st.markdown("---")
+
+# Instrucciones
 with st.expander("📋 Instrucciones para mejores resultados"):
     st.markdown("""
     **Para obtener los mejores resultados:**
@@ -144,16 +155,4 @@ with st.expander("📋 Instrucciones para mejores resultados"):
 
 # Footer
 st.markdown("---")
-st.markdown(
-    "**Clasificador de Camélidos Sudamericanos** | "
-    "**Soporte:** contacto@ejemplo.com"
-)
-
-# Mostrar las características como en tu imagen
-st.markdown("---")
-st.header("Características distintivas de cada especie:")
-
-for especie, datos in especies_info.items():
-    st.markdown(datos["icon"])
-    st.info(datos["info"])
-    st.markdown("---")
+st.markdown("**Clasificador de Camélidos Sudamericanos** | Demo de funcionalidad")
