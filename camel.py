@@ -9,44 +9,66 @@ st.set_page_config(
     layout="wide"
 )
 
-# CSS para el fondo de color beige con verde claro
+# CSS para el fondo con siluetas y colores cálidos pastel
 st.markdown("""
 <style>
     .main {
-        background: linear-gradient(135deg, #f5f5dc 0%, #e6f2e6 100%);
+        background: linear-gradient(135deg, #fff5e6 0%, #ffe6e6 50%, #e6f2ff 100%);
         padding: 20px;
         border-radius: 10px;
+        position: relative;
+        overflow: hidden;
+    }
+    .main::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url("data:image/svg+xml,%3Csvg width='400' height='400' viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M80,100 Q120,60 160,80 Q200,100 180,140 Q160,180 120,160 Q80,140 80,100 Z' fill='%23ffd9b3' opacity='0.3'/%3E%3Cpath d='M250,120 Q290,80 330,100 Q350,140 320,170 Q280,200 240,180 Q220,150 250,120 Z' fill='%23ffb3b3' opacity='0.3'/%3E%3Cpath d='M150,250 Q190,220 230,240 Q250,280 220,310 Q180,340 140,320 Q120,280 150,250 Z' fill='%23b3d9ff' opacity='0.3'/%3E%3C/svg%3E");
+        opacity: 0.1;
+        z-index: -1;
     }
     .sidebar .sidebar-content {
-        background: linear-gradient(180deg, #f0f8f0 0%, #e8f4e8 100%);
+        background: linear-gradient(180deg, #fff0e6 0%, #ffe6e6 100%);
     }
     .species-card {
-        background-color: #ffffff;
+        background-color: rgba(255, 255, 255, 0.95);
         padding: 20px;
-        border-radius: 10px;
-        border-left: 5px solid #8fbc8f;
-        margin: 10px 0px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        border-radius: 15px;
+        border-left: 5px solid #ff9966;
+        margin: 15px 0px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        backdrop-filter: blur(5px);
     }
     .taxonomy-card {
-        background-color: #ffffff;
-        padding: 15px;
-        border-radius: 10px;
-        border: 2px solid #2e8b57;
-        margin: 10px 0px;
+        background-color: rgba(255, 255, 255, 0.95);
+        padding: 20px;
+        border-radius: 15px;
+        border: 2px solid #ff9966;
+        margin: 15px 0px;
+        backdrop-filter: blur(5px);
     }
     .classification-tree {
         font-family: 'Courier New', monospace;
-        background-color: #f8f9fa;
-        padding: 15px;
-        border-radius: 5px;
-        border-left: 4px solid #6c757d;
+        background-color: rgba(248, 249, 250, 0.8);
+        padding: 20px;
+        border-radius: 10px;
+        border-left: 4px solid #ff9966;
+    }
+    .result-card {
+        background: linear-gradient(135deg, rgba(255, 245, 230, 0.95) 0%, rgba(255, 230, 230, 0.95) 100%);
+        padding: 25px;
+        border-radius: 15px;
+        border-left: 5px solid #ff6666;
+        backdrop-filter: blur(5px);
     }
 </style>
 """, unsafe_allow_html=True)
 
 # Título principal
-st.title("CLASIFICADOR DE CAMELIDOS SUDAMERICANOS")
+st.title("CLASIFICADOR DE CAMÉLIDOS SUDAMERICANOS")
 st.subheader("¿Cómo reconocer una llama, alpaca, vicuña y guanaco?")
 st.markdown("---")
 
@@ -80,7 +102,8 @@ especies_detalladas = {
         "estado": "Doméstica",
         "altura": "0.8 - 1.0 m",
         "peso": "48 - 84 kg",
-        "color": "Más de 22 colores naturales"
+        "color": "Más de 22 colores naturales",
+        "color_borde": "#ff9966"
     },
     "Guanaco": {
         "nombre_cientifico": "Lama guanicoe",
@@ -90,7 +113,8 @@ especies_detalladas = {
         "estado": "Silvestre",
         "altura": "1.0 - 1.2 m",
         "peso": "90 - 140 kg",
-        "color": "Marrón claro con vientre blanco"
+        "color": "Marrón claro con vientre blanco",
+        "color_borde": "#ff6666"
     },
     "Llama": {
         "nombre_cientifico": "Lama glama",
@@ -100,7 +124,8 @@ especies_detalladas = {
         "estado": "Doméstica",
         "altura": "1.7 - 1.8 m",
         "peso": "130 - 200 kg",
-        "color": "Variados: blanco, negro, marrón, manchado"
+        "color": "Variados: blanco, negro, marrón, manchado",
+        "color_borde": "#ffcc66"
     },
     "Vicuña": {
         "nombre_cientifico": "Vicugna vicugna",
@@ -110,7 +135,8 @@ especies_detalladas = {
         "estado": "Silvestre y protegida tras un peligro de extinción",
         "altura": "0.7 - 0.9 m",
         "peso": "35 - 65 kg",
-        "color": "Marrón rojizo con blanco"
+        "color": "Marrón rojizo con blanco",
+        "color_borde": "#ff99cc"
     }
 }
 
@@ -134,18 +160,16 @@ with col1:
     
     for especie, datos in especies_detalladas.items():
         # Determinar color de borde según el estado
-        border_color = "#4CAF50" if datos["estado"] == "Doméstica" else "#FF9800"
-        if "protegida" in datos["estado"].lower():
-            border_color = "#F44336"
+        border_color = datos["color_borde"]
         
         st.markdown(f"""
         <div class="species-card" style="border-left: 5px solid {border_color};">
-            <h3 style="color: #2e8b57; margin: 0 0 10px 0;">
+            <h3 style="color: #d35400; margin: 0 0 15px 0;">
                 {datos['icon']} {especie} 
                 <small style="font-size: 0.7em; color: #666;">({datos['nombre_cientifico']})</small>
             </h3>
             
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
                 <div>
                     <strong>📏 Altura:</strong> {datos['altura']}<br>
                     <strong>⚖️ Peso:</strong> {datos['peso']}
@@ -193,14 +217,13 @@ with col2:
                     st.subheader("📊 Resultados de la Identificación")
                     
                     # Determinar color según confianza
-                    confidence_color = "#4CAF50" if confidence > 0.7 else "#FF9800" if confidence > 0.5 else "#F44336"
+                    confidence_color = "#27ae60" if confidence > 0.7 else "#f39c12" if confidence > 0.5 else "#e74c3c"
                     
                     # Tarjeta de resultado
                     datos_especie = especies_detalladas[predicted_class]
                     st.markdown(f"""
-                    <div style="background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%); 
-                                padding: 20px; border-radius: 10px; border-left: 5px solid {confidence_color};">
-                        <h3 style="color: #2e7d32; margin: 0 0 10px 0;">
+                    <div class="result-card">
+                        <h3 style="color: #c0392b; margin: 0 0 15px 0;">
                             {datos_especie['icon']} {predicted_class}
                             <small style="font-size: 0.7em; color: #666;">({datos_especie['nombre_cientifico']})</small>
                         </h3>
@@ -240,24 +263,24 @@ with col2:
     st.markdown("---")
     st.markdown("### 📏 Comparación de Tamaño")
     st.markdown("""
-    <div style='background-color: #ffffff; padding: 15px; border-radius: 10px;'>
-    <h4 style='margin: 0; color: #2e8b57;'>Altura promedio (a la cruz):</h4>
+    <div style='background-color: rgba(255, 255, 255, 0.95); padding: 20px; border-radius: 15px; border-left: 5px solid #ff9966;'>
+    <h4 style='margin: 0 0 15px 0; color: #d35400;'>Altura promedio (a la cruz):</h4>
     <div style='margin: 15px 0;'>
-        <div style='display: flex; align-items: center; margin: 10px 0;'>
-            <div style='width: 120px; height: 20px; background-color: #8B4513; border-radius: 3px;'></div>
-            <span style='margin-left: 10px;'><strong>LLAMA</strong> - 1.7-1.8 m</span>
+        <div style='display: flex; align-items: center; margin: 12px 0;'>
+            <div style='width: 120px; height: 22px; background: linear-gradient(90deg, #ff9966, #ff5e62); border-radius: 5px;'></div>
+            <span style='margin-left: 15px; font-weight: bold;'>LLAMA - 1.7-1.8 m</span>
         </div>
-        <div style='display: flex; align-items: center; margin: 10px 0;'>
-            <div style='width: 80px; height: 20px; background-color: #808080; border-radius: 3px;'></div>
-            <span style='margin-left: 10px;'><strong>GUANACO</strong> - 1.0-1.2 m</span>
+        <div style='display: flex; align-items: center; margin: 12px 0;'>
+            <div style='width: 80px; height: 22px; background: linear-gradient(90deg, #ff6666, #ff3366); border-radius: 5px;'></div>
+            <span style='margin-left: 15px; font-weight: bold;'>GUANACO - 1.0-1.2 m</span>
         </div>
-        <div style='display: flex; align-items: center; margin: 10px 0;'>
-            <div style='width: 60px; height: 20px; background-color: #A52A2A; border-radius: 3px;'></div>
-            <span style='margin-left: 10px;'><strong>ALPACA</strong> - 0.8-1.0 m</span>
+        <div style='display: flex; align-items: center; margin: 12px 0;'>
+            <div style='width: 60px; height: 22px; background: linear-gradient(90deg, #ffcc66, #ffb366); border-radius: 5px;'></div>
+            <span style='margin-left: 15px; font-weight: bold;'>ALPACA - 0.8-1.0 m</span>
         </div>
-        <div style='display: flex; align-items: center; margin: 10px 0;'>
-            <div style='width: 50px; height: 20px; background-color: #D2691E; border-radius: 3px;'></div>
-            <span style='margin-left: 10px;'><strong>VICUÑA</strong> - 0.7-0.9 m</span>
+        <div style='display: flex; align-items: center; margin: 12px 0;'>
+            <div style='width: 50px; height: 22px; background: linear-gradient(90deg, #ff99cc, #ff66cc); border-radius: 5px;'></div>
+            <span style='margin-left: 15px; font-weight: bold;'>VICUÑA - 0.7-0.9 m</span>
         </div>
     </div>
     </div>
@@ -266,23 +289,23 @@ with col2:
 # Instrucciones
 with st.expander("📋 Instrucciones para una Identificación Precisa"):
     st.markdown("""
-    <div style="background-color: #e8f5e8; padding: 15px; border-radius: 10px;">
-    **Para obtener los mejores resultados en la identificación:**
+    <div style="background-color: rgba(255, 245, 230, 0.9); padding: 20px; border-radius: 15px;">
+    <h4 style="color: #d35400;">Para obtener los mejores resultados en la identificación:</h4>
     
-    - 🦙 **Enfoca claramente** al animal, especialmente la cabeza y el pelaje
-    - 📷 **Buena iluminación** para apreciar colores y texturas
-    - 🌅 **Fondo simple** que no distraiga del animal
-    - ⚡ **Imagen nítida** para analizar características morfológicas
-    - 👁️ **Vista lateral** preferible para apreciar silueta y tamaño
+    - 🦙 <strong>Enfoca claramente</strong> al animal, especialmente la cabeza y el pelaje
+    - 📷 <strong>Buena iluminación</strong> para apreciar colores y texturas
+    - 🌅 <strong>Fondo simple</strong> que no distraiga del animal
+    - ⚡ <strong>Imagen nítida</strong> para analizar características morfológicas
+    - 👁️ <strong>Vista lateral</strong> preferible para apreciar silueta y tamaño
     </div>
     """, unsafe_allow_html=True)
 
 # Footer
 st.markdown("---")
 st.markdown(
-    "<div style='text-align: center; color: #666;'>"
-    "<strong>CLASIFICADOR TAXONÓMICO DE CAMÉLIDOS SUDAMERICANOS</strong> | "
-    "Sistema de identificación basado en características morfológicas"
+    "<div style='text-align: center; color: #d35400; background-color: rgba(255, 245, 230, 0.8); padding: 15px; border-radius: 10px;'>"
+    "<strong>CLASIFICADOR TAXONÓMICO DE CAMÉLIDOS SUDAMERICANOS</strong><br>"
+    "<small>Sistema de identificación basado en características morfológicas</small>"
     "</div>", 
     unsafe_allow_html=True
 )
