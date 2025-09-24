@@ -1,9 +1,6 @@
 import streamlit as st
 import numpy as np
 from PIL import Image
-import matplotlib.pyplot as plt
-import requests
-from io import BytesIO
 
 # Configuración de la página
 st.set_page_config(
@@ -49,26 +46,22 @@ for especie, datos in especies_info.items():
     st.sidebar.info(datos["info"])
     st.sidebar.markdown("---")
 
-# Función para preprocesar la imagen (sin TensorFlow)
+# Función para preprocesar la imagen
 def preprocess_image(image):
     image = image.resize((224, 224))
     image_array = np.array(image)
     # Si la imagen tiene canal alpha (RGBA), convertir a RGB
-    if image_array.shape[-1] == 4:
+    if len(image_array.shape) > 2 and image_array.shape[-1] == 4:
         image_array = image_array[:, :, :3]
     image_array = image_array / 255.0
     return image_array
 
-# Función de clasificación simulada (sin modelo real)
+# Función de clasificación simulada
 def classify_image(image):
     # Simular análisis de características visuales
     processed_image = preprocess_image(image)
     
-    # Análisis simple de colores (simulación)
-    avg_color = np.mean(processed_image, axis=(0, 1))
-    
-    # Simular probabilidades basadas en características de color
-    # Esto es solo una simulación - en un caso real usarías un modelo entrenado
+    # Simular probabilidades
     simulated_probs = np.random.dirichlet(np.ones(4), size=1)[0]
     
     return simulated_probs
@@ -111,21 +104,14 @@ with col1:
                         st.success(f"**Característica identificada:** {especies_info[predicted_class]['caracteristica']}")
                         st.metric("Nivel de confianza", f"{confidence:.2%}")
                         
-                        # Gráfico de barras de probabilidades
-                        fig, ax = plt.subplots(figsize=(10, 6))
-                        colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4']
-                        bars = ax.bar(classes, probabilities * 100, color=colors)
-                        ax.set_ylabel('Probabilidad (%)')
-                        ax.set_title('Distribución de Probabilidades por Especie')
+                        # Mostrar probabilidades en forma de tabla (sin matplotlib)
+                        st.subheader("Probabilidades por especie:")
                         
-                        # Añadir valores en las barras
-                        for bar, value in zip(bars, probabilities * 100):
-                            ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 1,
-                                   f'{value:.1f}%', ha='center', va='bottom', fontweight='bold')
-                        
-                        plt.xticks(rotation=45)
-                        plt.tight_layout()
-                        st.pyplot(fig)
+                        # Crear una barra de progreso visual para cada especie
+                        for i, especie in enumerate(classes):
+                            prob_percent = probabilities[i] * 100
+                            st.write(f"**{especie}:** {prob_percent:.1f}%")
+                            st.progress(float(probabilities[i]))
                         
                         # Información adicional de la especie
                         st.info(f"**Información:** {especies_info[predicted_class]['info']}")
