@@ -9,11 +9,25 @@ st.set_page_config(
     layout="wide"
 )
 
-# CSS simple con fondo beige
+# CSS con fondo amarillo claro para títulos y mejoras visuales
 st.markdown("""
 <style>
     .main {
         background-color: #f5f5dc;
+    }
+    .title-container {
+        background-color: #fffacd;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        border-left: 5px solid #8B4513;
+    }
+    .subtitle-container {
+        background-color: #fffacd;
+        padding: 15px;
+        border-radius: 8px;
+        margin: 15px 0px;
+        border-left: 4px solid #8B4513;
     }
     .species-info {
         background-color: #ffffff;
@@ -33,21 +47,32 @@ st.markdown("""
         color: #8B4513;
         font-weight: bold;
     }
+    .taxonomy-box {
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        border: 2px solid #8B4513;
+        font-family: 'Courier New', monospace;
+        line-height: 1.6;
+    }
 </style>
 """, unsafe_allow_html=True)
 
-# Título principal
+# Título principal con fondo amarillo claro
+st.markdown('<div class="title-container">', unsafe_allow_html=True)
 st.title("CLASIFICADOR DE CAMÉLIDOS SUDAMERICANOS")
 st.subheader("¿Cómo reconocer una llama, alpaca, vicuña y guanaco?")
+st.markdown('</div>', unsafe_allow_html=True)
+
 st.markdown("---")
 
-# Información taxonómica
+# Información taxonómica corregida
 taxonomia = """
 **La familia Camelidae está formada por dos tribus: los Camelini y los Lamini** (Stanley et al., 1994; Wheeler, 1995).
 
 **Tribu Camelini**
 └── **GÉNERO: Camelus**
-    ├── Camelus bactrianus → **CAMELIO**
+    ├── Camelus bactrianus → **CAMELLO**
     └── Camelus dromedarius → **DROMEDARIO**
 
 **Familia Camelidae**
@@ -61,7 +86,7 @@ taxonomia = """
     └── Vicugna pacos → **ALPACA**
 """
 
-# Texto exacto proporcionado para cada especie
+# Texto exacto proporcionado para cada especie (con ícono de animal para vicuña)
 especies_texto = {
     "Alpaca": {
         "nombre_cientifico": "Lama pacos",
@@ -80,7 +105,7 @@ especies_texto = {
     },
     "Vicuña": {
         "nombre_cientifico": "Vicugna vicugna",
-        "icon": "🎯",
+        "icon": "🦌",  # Cambiado a un animal (ciervo) en lugar del diana
         "texto_completo": "**Vicuña (Vicugna vicugna)**\n\nDescripción: La más pequeña de los camélidos andinos, con cuerpo grácil y movimientos ágiles. Posee pelaje muy fino y brillante, de color marrón claro en el lomo y blanquecino en el pecho. Uso: Su fibra es considerada la más fina del mundo, y se aprovecha en la industria textil de lujo. Estado: Silvestre y protegida tras un peligro de extinción."
     }
 }
@@ -89,15 +114,22 @@ especies_texto = {
 col1, col2 = st.columns([1, 1])
 
 with col1:
-    # Clasificación taxonómica
+    # Clasificación taxonómica con fondo amarillo claro
+    st.markdown('<div class="subtitle-container">', unsafe_allow_html=True)
     st.markdown("### 📊 Clasificación Taxonómica")
     st.markdown("**Figura 1. Clasificación de los camélidos**")
-    st.markdown(f'<div style="background-color: white; padding: 15px; border-radius: 10px;">{taxonomia}</div>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+    
+    st.markdown('<div class="taxonomy-box">', unsafe_allow_html=True)
+    st.markdown(taxonomia)
+    st.markdown('</div>', unsafe_allow_html=True)
     
     st.markdown("---")
     
-    # Especies de camélidos andinos
+    # Especies de camélidos andinos con fondo amarillo claro en el subtítulo
+    st.markdown('<div class="subtitle-container">', unsafe_allow_html=True)
     st.markdown("### 🦙 Especies de Camélidos Andinos")
+    st.markdown('</div>', unsafe_allow_html=True)
     
     for especie, datos in especies_texto.items():
         st.markdown(f'<div class="species-info">', unsafe_allow_html=True)
@@ -105,8 +137,10 @@ with col1:
         st.markdown('</div>', unsafe_allow_html=True)
 
 with col2:
-    # Sección de clasificación de imágenes
+    # Sección de clasificación de imágenes con fondo amarillo claro
+    st.markdown('<div class="subtitle-container">', unsafe_allow_html=True)
     st.header("📤 Clasificador de Imágenes")
+    st.markdown('</div>', unsafe_allow_html=True)
     
     uploaded_file = st.file_uploader(
         "Selecciona una imagen de un camélido sudamericano",
@@ -115,9 +149,9 @@ with col2:
     )
     
     if uploaded_file is not None:
-        # Mostrar imagen original
+        # Mostrar imagen original (CORREGIDO el parámetro use_column_width)
         image = Image.open(uploaded_file)
-        st.image(image, caption="Imagen subida", use_column_width=True)
+        st.image(image, caption="Imagen subida", use_container_width=True)  # Corregido aquí
         
         # Botón para clasificar
         if st.button("🔍 Identificar Especie", type="primary", use_container_width=True):
@@ -132,8 +166,10 @@ with col2:
                     predicted_class = classes[result_index]
                     confidence = probabilities[result_index]
                     
-                    # Mostrar resultados
+                    # Mostrar resultados con fondo amarillo claro
+                    st.markdown('<div class="subtitle-container">', unsafe_allow_html=True)
                     st.subheader("📊 Resultados de la Identificación")
+                    st.markdown('</div>', unsafe_allow_html=True)
                     
                     # Resultado principal
                     st.success(f"**Especie identificada:** {especies_texto[predicted_class]['icon']} {predicted_class}")
@@ -145,7 +181,10 @@ with col2:
                     st.markdown('</div>', unsafe_allow_html=True)
                     
                     # Probabilidades para todas las especies
+                    st.markdown('<div class="subtitle-container">', unsafe_allow_html=True)
                     st.subheader("Probabilidades por especie:")
+                    st.markdown('</div>', unsafe_allow_html=True)
+                    
                     for i, especie in enumerate(classes):
                         prob_percent = probabilities[i] * 100
                         st.write(f"**{especies_texto[especie]['icon']} {especie}:** {prob_percent:.1f}%")
@@ -156,14 +195,17 @@ with col2:
 
     # Comparación de tamaño con fondo beige y texto café
     st.markdown("---")
+    st.markdown('<div class="subtitle-container">', unsafe_allow_html=True)
     st.markdown("### 📏 Comparación de Tamaño")
+    st.markdown('</div>', unsafe_allow_html=True)
+    
     st.markdown('<div class="size-comparison">', unsafe_allow_html=True)
     st.markdown('<p class="cafe-text">Altura promedio (a la cruz):</p>', unsafe_allow_html=True)
     
     # Barras de tamaño simplificadas
     especies_altura = [
         ("LLAMA", "1.7-1.8 m", 180),
-        ("GUANACO", "1.0-1.2 m", 110),
+        ("GUANACO", "1.0-1.2 m", 120),
         ("ALPACA", "0.8-1.0 m", 90),
         ("VICUÑA", "0.7-0.9 m", 80)
     ]
@@ -174,8 +216,8 @@ with col2:
     
     st.markdown('</div>', unsafe_allow_html=True)
 
-# Instrucciones
-with st.expander("📋 Instrucciones para mejor identificación"):
+# Instrucciones con fondo amarillo claro
+with st.expander("📋 Instrucciones para mejor identificación", expanded=False):
     st.markdown("""
     **Para obtener mejores resultados:**
     - Toma fotos con buena iluminación
@@ -186,4 +228,6 @@ with st.expander("📋 Instrucciones para mejor identificación"):
 
 # Footer
 st.markdown("---")
+st.markdown('<div style="text-align: center; color: #8B4513;">', unsafe_allow_html=True)
 st.markdown("**CLASIFICADOR DE CAMÉLIDOS SUDAMERICANOS**")
+st.markdown('</div>', unsafe_allow_html=True)
