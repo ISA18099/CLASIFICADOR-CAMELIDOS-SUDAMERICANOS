@@ -33,13 +33,73 @@ st.markdown("""
         box-shadow: 0 2px 10px rgba(0,0,0,0.08);
         border: none;
     }
-    .species-info {
-        background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
-        padding: 20px;
+    .species-card-alpaca {
+        background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+        padding: 25px;
         border-radius: 15px;
         margin: 15px 0px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        border-left: 4px solid #81c784;
+        box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
+        border-left: 5px solid #4caf50;
+    }
+    .species-card-guanaco {
+        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        padding: 25px;
+        border-radius: 15px;
+        margin: 15px 0px;
+        box-shadow: 0 4px 12px rgba(33, 150, 243, 0.2);
+        border-left: 5px solid #2196f3;
+    }
+    .species-card-llama {
+        background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%);
+        padding: 25px;
+        border-radius: 15px;
+        margin: 15px 0px;
+        box-shadow: 0 4px 12px rgba(233, 30, 99, 0.2);
+        border-left: 5px solid #e91e63;
+    }
+    .species-card-vicuna {
+        background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+        padding: 25px;
+        border-radius: 15px;
+        margin: 15px 0px;
+        box-shadow: 0 4px 12px rgba(255, 152, 0, 0.2);
+        border-left: 5px solid #ff9800;
+    }
+    .species-title-alpaca {
+        color: #2e7d32;
+        font-size: 1.4em;
+        font-weight: 700;
+        margin-bottom: 15px;
+        text-align: center;
+    }
+    .species-title-guanaco {
+        color: #1565c0;
+        font-size: 1.4em;
+        font-weight: 700;
+        margin-bottom: 15px;
+        text-align: center;
+    }
+    .species-title-llama {
+        color: #c2185b;
+        font-size: 1.4em;
+        font-weight: 700;
+        margin-bottom: 15px;
+        text-align: center;
+    }
+    .species-title-vicuna {
+        color: #ef6c00;
+        font-size: 1.4em;
+        font-weight: 700;
+        margin-bottom: 15px;
+        text-align: center;
+    }
+    .species-content {
+        color: #5d4037;
+        line-height: 1.6;
+        font-size: 1em;
+    }
+    .species-content strong {
+        color: #455a64;
     }
     .upload-container {
         background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
@@ -88,10 +148,6 @@ st.markdown("""
         font-size: 24px;
         margin-right: 10px;
     }
-    .cafe-text {
-        color: #5d4037;
-        font-weight: 600;
-    }
     .taxonomy-box {
         background: linear-gradient(135deg, #f5f5f5 0%, #eeeeee 100%);
         padding: 20px;
@@ -99,6 +155,13 @@ st.markdown("""
         font-family: 'Courier New', monospace;
         line-height: 1.6;
         box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .species-grid {
+        background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+        padding: 25px;
+        border-radius: 20px;
+        margin-top: 20px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
 </style>
 """, unsafe_allow_html=True)
@@ -134,22 +197,26 @@ especies_texto = {
     "Alpaca": {
         "nombre_cientifico": "Lama pacos",
         "icon": "🐑",
-        "texto_completo": "**Alpaca (Lama pacos)**\n\nDescripción: Más pequeña que la llama, con una silueta más curvilínea. Posee un clásico mechón de fibra en la frente. Uso: Criada por su valiosa fibra, considerada una de las más finas y suaves del mundo. Estado: Doméstica."
+        "texto_completo": "**Alpaca (Lama pacos)**\n\n**Descripción:** Más pequeña que la llama, con una silueta más curvilínea. Posee un clásico mechón de fibra en la frente.\n\n**Uso:** Criada por su valiosa fibra, considerada una de las más finas y suaves del mundo.\n\n**Estado:** Doméstica.",
+        "color_clase": "alpaca"
     },
     "Guanaco": {
         "nombre_cientifico": "Lama guanicoe",
         "icon": "🦌",
-        "texto_completo": "**Guanaco (Lama guanicoe)**\n\nDescripción: Silvestre, con pelaje denso de color marrón-rojizo claro y el vientre blanquecino. Es el antepasado silvestre de la llama. Uso: No tiene un uso económico principal, pero es una especie importante por su valor ecológico. Estado: Silvestre."
+        "texto_completo": "**Guanaco (Lama guanicoe)**\n\n**Descripción:** Silvestre, con pelaje denso de color marrón-rojizo claro y el vientre blanquecino. Es el antepasado silvestre de la llama.\n\n**Uso:** No tiene un uso económico principal, pero es una especie importante por su valor ecológico.\n\n**Estado:** Silvestre.",
+        "color_clase": "guanaco"
     },
     "Llama": {
         "nombre_cientifico": "Lama glama",
         "icon": "🦙",
-        "texto_completo": "**Llama (Lama glama)**\n\nDescripción: Es el camélido doméstico de mayor tamaño y peso, con patas largas, orejas prominentes y curvadas, y pelaje grueso y áspero. Uso: Se utiliza como animal de carga para el transporte y, en menor medida, por su lana y carne. Estado: Doméstica."
+        "texto_completo": "**Llama (Lama glama)**\n\n**Descripción:** Es el camélido doméstico de mayor tamaño y peso, con patas largas, orejas prominentes y curvadas, y pelaje grueso y áspero.\n\n**Uso:** Se utiliza como animal de carga para el transporte y, en menor medida, por su lana y carne.\n\n**Estado:** Doméstica.",
+        "color_clase": "llama"
     },
     "Vicuña": {
         "nombre_cientifico": "Vicugna vicugna",
         "icon": "🐾",
-        "texto_completo": "**Vicuña (Vicugna vicugna)**\n\nDescripción: La más pequeña de los camélidos andinos, con cuerpo grácil y movimientos ágiles. Posee pelaje muy fino y brillante, de color marrón claro en el lomo y blanquecino en el pecho. Uso: Su fibra es considerada la más fina del mundo, y se aprovecha en la industria textil de lujo. Estado: Silvestre y protegida tras un peligro de extinción."
+        "texto_completo": "**Vicuña (Vicugna vicugna)**\n\n**Descripción:** La más pequeña de los camélidos andinos, con cuerpo grácil y movimientos ágiles. Posee pelaje muy fino y brillante, de color marrón claro en el lomo y blanquecino en el pecho.\n\n**Uso:** Su fibra es considerada la más fina del mundo, y se aprovecha en la industria textil de lujo.\n\n**Estado:** Silvestre y protegida tras un peligro de extinción.",
+        "color_clase": "vicuna"
     }
 }
 
@@ -226,8 +293,10 @@ with col2:
                         st.metric("Nivel de confianza", f"{confidence:.2%}")
                         
                         # Información de la especie identificada
-                        st.markdown(f'<div class="species-info">', unsafe_allow_html=True)
-                        st.markdown(especies_texto[predicted_class]["texto_completo"])
+                        color_clase = especies_texto[predicted_class]['color_clase']
+                        st.markdown(f'<div class="species-card-{color_clase}">', unsafe_allow_html=True)
+                        st.markdown(f'<div class="species-title-{color_clase}">{especies_texto[predicted_class]["icon"]} {predicted_class}</div>', unsafe_allow_html=True)
+                        st.markdown(f'<div class="species-content">{especies_texto[predicted_class]["texto_completo"]}</div>', unsafe_allow_html=True)
                         st.markdown('</div>', unsafe_allow_html=True)
                         
                         # Probabilidades detalladas
@@ -251,19 +320,24 @@ with col2:
                     except Exception as e:
                         st.error(f"❌ Error al procesar la imagen: {str(e)}")
 
-# Información de especies en la parte inferior
+# Información de especies en la parte inferior CON FONDO COLORIDO
 st.markdown("---")
+st.markdown('<div class="species-grid">', unsafe_allow_html=True)
 st.markdown('<div class="subtitle-container">', unsafe_allow_html=True)
 st.markdown('<h3 style="color: #1565c0; margin: 0;">🦙 Especies de Camélidos Andinos</h3>', unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
 
-# Grid de 2x2 para las especies
+# Grid de 2x2 para las especies con colores diferentes
 cols = st.columns(2)
 for i, (especie, datos) in enumerate(especies_texto.items()):
     with cols[i % 2]:
-        st.markdown(f'<div class="species-info">', unsafe_allow_html=True)
-        st.markdown(datos["texto_completo"])
+        color_clase = datos['color_clase']
+        st.markdown(f'<div class="species-card-{color_clase}">', unsafe_allow_html=True)
+        st.markdown(f'<div class="species-title-{color_clase}">{datos["icon"]} {especie}</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="species-content">{datos["texto_completo"]}</div>', unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
+
+st.markdown('</div>', unsafe_allow_html=True)
 
 # Footer atractivo
 st.markdown("---")
