@@ -101,6 +101,13 @@ st.markdown("""
     .species-content strong {
         color: #455a64;
     }
+    .color-info {
+        background: rgba(255,255,255,0.7);
+        padding: 10px;
+        border-radius: 8px;
+        margin: 10px 0;
+        border-left: 3px solid #ffd54f;
+    }
     .upload-container {
         background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
         padding: 25px;
@@ -153,8 +160,9 @@ st.markdown("""
         padding: 20px;
         border-radius: 15px;
         font-family: 'Courier New', monospace;
-        line-height: 1.6;
+        line-height: 1.8;
         box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        font-size: 0.95em;
     }
     .species-grid {
         background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
@@ -172,50 +180,82 @@ st.markdown('<h1 style="color: #5d4037; margin-bottom: 10px;">🦙 CLASIFICADOR 
 st.markdown('<h3 style="color: #7e57c2; font-weight: 300;">Descubre y reconoce las especies de camélidos andinos</h3>', unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
 
-# Información taxonómica
+# Información taxonómica CORREGIDA
 taxonomia = """
 **La familia Camelidae está formada por dos tribus: los Camelini y los Lamini** (Stanley et al., 1994; Wheeler, 1995).
 
-**Tribu Camelini**
-└── **GÉNERO: Camelus**
-    ├── Camelus bactrianus → **CAMELLO**
-    └── Camelus dromedarius → **DROMEDARIO**
+**Tribu Camelini**  
+└── **GÉNERO: Camelus**  
+    ├── Camelus bactrianus → **CAMELLO**  
+    └── Camelus dromedarius → **DROMEDARIO**  
 
 **Familia Camelidae**
 
-**Tribu Lamini**
-├── **GÉNERO: Lama**
-│   ├── Lama guanicoe → **GUANACO**
-│   └── Lama glama → **LLAMA**
-└── **GÉNERO: Vicugna**
-    ├── Vicugna vicugna → **VICUÑA**
+**Tribu Lamini**  
+├── **GÉNERO: Lama**  
+│   ├── Lama guanicoe → **GUANACO**  
+│   └── Lama glama → **LLAMA**  
+└── **GÉNERO: Vicugna**  
+    ├── Vicugna vicugna → **VICUÑA**  
     └── Vicugna pacos → **ALPACA**
 """
 
-# Texto exacto proporcionado para cada especie
+# Texto exacto proporcionado para cada especie CON INFORMACIÓN DE COLORES
 especies_texto = {
     "Alpaca": {
         "nombre_cientifico": "Lama pacos",
         "icon": "🐑",
-        "texto_completo": "**Alpaca (Lama pacos)**\n\n**Descripción:** Más pequeña que la llama, con una silueta más curvilínea. Posee un clásico mechón de fibra en la frente.\n\n**Uso:** Criada por su valiosa fibra, considerada una de las más finas y suaves del mundo.\n\n**Estado:** Doméstica.",
+        "texto_completo": """**Alpaca (Lama pacos)**
+
+**Descripción:** Más pequeña que la llama, con una silueta más curvilínea. Posee un clásico mechón de fibra en la frente.
+
+**Color:** Gran variedad hasta 22 colores degradados de blanco, beige, marrón, negro, plomo y rosillo generalmente el cuerpo entero tiene un solo color.
+
+**Uso:** Criada por su valiosa fibra, considerada una de las más finas y suaves del mundo.
+
+**Estado:** Doméstica.""",
         "color_clase": "alpaca"
     },
     "Guanaco": {
         "nombre_cientifico": "Lama guanicoe",
         "icon": "🦌",
-        "texto_completo": "**Guanaco (Lama guanicoe)**\n\n**Descripción:** Silvestre, con pelaje denso de color marrón-rojizo claro y el vientre blanquecino. Es el antepasado silvestre de la llama.\n\n**Uso:** No tiene un uso económico principal, pero es una especie importante por su valor ecológico.\n\n**Estado:** Silvestre.",
+        "texto_completo": """**Guanaco (Lama guanicoe)**
+
+**Descripción:** Silvestre, con pelaje denso de color marrón-rojizo claro y el vientre blanquecino. Es el antepasado silvestre de la llama.
+
+**Color:** El manto es café y el pecho blanco y se diferencia de la vicuña porque en todos los casos la cabeza, orejas y las patas son de color gris de pelo corto.
+
+**Uso:** No tiene un uso económico principal, pero es una especie importante por su valor ecológico.
+
+**Estado:** Silvestre.""",
         "color_clase": "guanaco"
     },
     "Llama": {
         "nombre_cientifico": "Lama glama",
         "icon": "🦙",
-        "texto_completo": "**Llama (Lama glama)**\n\n**Descripción:** Es el camélido doméstico de mayor tamaño y peso, con patas largas, orejas prominentes y curvadas, y pelaje grueso y áspero.\n\n**Uso:** Se utiliza como animal de carga para el transporte y, en menor medida, por su lana y carne.\n\n**Estado:** Doméstica.",
+        "texto_completo": """**Llama (Lama glama)**
+
+**Descripción:** Es el camélido doméstico de mayor tamaño y peso, con patas largas, orejas prominentes y curvadas, y pelaje grueso y áspero.
+
+**Color:** Muy variado y a diferencia de los otros animales su color es con manchas visibles combinados de blanco, negro, marrón, beige, apaloose.
+
+**Uso:** Se utiliza como animal de carga para el transporte y, en menor medida, por su lana y carne.
+
+**Estado:** Doméstica.""",
         "color_clase": "llama"
     },
     "Vicuña": {
         "nombre_cientifico": "Vicugna vicugna",
         "icon": "🐾",
-        "texto_completo": "**Vicuña (Vicugna vicugna)**\n\n**Descripción:** La más pequeña de los camélidos andinos, con cuerpo grácil y movimientos ágiles. Posee pelaje muy fino y brillante, de color marrón claro en el lomo y blanquecino en el pecho.\n\n**Uso:** Su fibra es considerada la más fina del mundo, y se aprovecha en la industria textil de lujo.\n\n**Estado:** Silvestre y protegida tras un peligro de extinción.",
+        "texto_completo": """**Vicuña (Vicugna vicugna)**
+
+**Descripción:** La más pequeña de los camélidos andinos, con cuerpo grácil y movimientos ágiles. Posee pelaje muy fino y brillante, de color marrón claro en el lomo y blanquecino en el pecho.
+
+**Color:** El manto, la cabeza y las patas son de color café claro y el pecho es blanco, este animal no tiene variedades de color.
+
+**Uso:** Su fibra es considerada la más fina del mundo, y se aprovecha en la industria textil de lujo.
+
+**Estado:** Silvestre y protegida tras un peligro de extinción.""",
         "color_clase": "vicuna"
     }
 }
